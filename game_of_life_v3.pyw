@@ -1,9 +1,11 @@
 import pygame
 from pygame.locals import MOUSEBUTTONUP
+import time
 
 WINDOW_HEIGHT = 800
 WINDOW_WIDTH = 800
 BLOCK_SIZE = 20
+DELAY = 0.05
 
 def draw_units():
     global alive_cells
@@ -65,7 +67,7 @@ def reset():
     alive_cells = []
 
 def main():
-    global screen, alive_cells, BLOCK_SIZE
+    global screen, alive_cells, BLOCK_SIZE, DELAY
     running = True
     is_editing = True
     is_playing = False
@@ -96,12 +98,19 @@ def main():
                     is_grid_visible = not is_grid_visible
                 elif pygame.key.name(event.key) == 'r':
                     reset()
+                elif pygame.key.name(event.key) == 'up':
+                    DELAY = round(DELAY + 0.05, 2)
+                    print(DELAY)
+                elif pygame.key.name(event.key) == 'down':
+                    DELAY = round(DELAY - 0.05 if DELAY > 0 else 0, 2)
+                    print(DELAY)
             elif event.type == MOUSEBUTTONUP and is_editing:
                 mouse_x, mouse_y = event.pos
                 edit_unit(mouse_x, mouse_y)
         
         if is_playing:
             compute_new_step()
+            time.sleep(DELAY)
 
         screen.fill((255, 255, 255))
         draw_units()
